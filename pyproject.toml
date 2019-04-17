@@ -1,0 +1,13 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "fgarcade"
+author = "Fábio Macêdo Mendes"
+author-email = "fabiomacedomendes@gmail.com"
+home-page = "http://github.com/fabiommendes/fgarcade/"
+classifiers = ["License :: OSI Approved :: MIT License"]
+requires = [
+    "arcade~=2.0.4",
+]
