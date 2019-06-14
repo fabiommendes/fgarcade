@@ -1,43 +1,63 @@
 from functools import partial
 
-import arcade
+from sidekick import lazy
 
+import arcade
 from fgarcade.assets import get_tile
 from fgarcade.enums import Role
+from .base import GameWindow
 
 
-class LevelFactoryMixin:
+class HasPlatformsMixin(GameWindow):
     """
     Mixin class for arcade.Window's that define methods for creating platforms
     and elements on screen.
     """
-    scaling: float = 1.0
-    world_color: (int, int, int) = 'blue'
-    platforms: arcade.SpriteList
-    decorations: arcade.SpriteList
+
+    #: Configuration
+    world_theme = 'blue'
+
+    #: Scale factor
+    scaling = 1.0
+
+    #: Platform list
+    platforms = lazy(lambda _: arcade.SpriteList())
+
+    #: Decorations
+    background_decorations = lazy(lambda _: arcade.SpriteList())
+    foreground_decorations = lazy(lambda _: arcade.SpriteList())
+
+    #: Geometric properties
+    @lazy
+    def scene_horizontal_end(self):
+        return max(max(x.right for x in self.platforms), self.width)
+
+    @lazy
+    def scene_vertical_end(self):
+        return max(max(x.top for x in self.platforms), self.height) + 128
+
+    #
+    # Overrides
+    #
+    def draw_platforms(self):
+        self.background_decorations.draw()
+        self.platforms.draw()
+
+    def draw_foreground_decorations(self):
+        self.foreground_decorations.draw()
+
+    def draw_elements(self):
+        self.draw_platforms()
+        super().draw_elements()
+
+    def draw_foreground_elements(self):
+        super().draw_foreground_elements()
+        self.draw_foreground_decorations()
+
 
     #
     # Create elements
     #
-    def _get_tile(self, kind, color=None, scale=None, **kwargs):
-        if color is None:
-            color = self.world_color
-        if scale is None:
-            scale = self.scaling
-        return get_tile(kind, color, scale=scale, **kwargs)
-
-    def __append(self, obj, which=None):
-        if which:
-            which.append(obj)
-        elif getattr(obj, 'role', None) == Role.BACKGROUND:
-            self.decorations.append(obj)
-        else:
-            self.platforms.append(obj)
-
-    def __extend(self, objs):
-        for obj in objs:
-            self.__append(obj)
-
     def create_ground(self, size, coords=(0, 0), end='default', height=1,
                       roles=(Role.BACKGROUND, Role.OBJECT), **kwargs):
         """
@@ -170,13 +190,13 @@ class LevelFactoryMixin:
 
             if i != skip:
                 tile = new(bottom, position=(x * 64 + 32, (y - 1) * 64 + 32 * u))
-                self.decorations.append(tile)
+                self.background_decorations.append(tile)
 
             if fill:
                 for j in range(0, skip + u * i - 1):
                     pos = (x * 64 + 32, (y - j - 2) * 64 + u * 32)
                     tile = new('e1', role=Role.BACKGROUND, position=pos)
-                    self.decorations.append(tile)
+                    self.background_decorations.append(tile)
             x += 1
             y += u
 
@@ -196,3 +216,26 @@ class LevelFactoryMixin:
         x, y = coords
         kwargs.update(roles=roles, height=height)
         return self.create_ground(width, (x, y + height - 1), **kwargs)
+
+
+    #
+    # Auxiliary methods
+    #
+    def _get_tile(self, kind, color=None, scale=None, **kwargs):
+        if color is None:
+            color = self.world_theme
+        if scale is None:
+            scale = self.scaling
+        return get_tile(kind, color, scale=scale, **kwargs)
+
+    def __append(self, obj, which=None):
+        if which:
+            which.append(obj)
+        elif getattr(obj, 'role', None) == Role.BACKGROUND:
+            self.background_decorations.append(obj)
+        else:
+            self.platforms.append(obj)
+
+    def __extend(self, objs, which=None):
+        for obj in objs:
+            self.__append(obj, which)

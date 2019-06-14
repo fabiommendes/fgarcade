@@ -1,7 +1,6 @@
 from math import sqrt
 
 import arcade
-
 from fgarcade.enums import Role
 
 
@@ -9,6 +8,10 @@ class PhysicsEnginePlatformer(arcade.PhysicsEnginePlatformer):
     """
     This class is responsible for move everything and take care of collisions.
     """
+
+    def __init__(self, world):
+        gravity = getattr(world, 'gravity_constant', 0.5)
+        super().__init__(world.player, world.platforms, gravity)
 
     def can_jump(self) -> bool:
         """
@@ -29,7 +32,7 @@ class PhysicsEnginePlatformer(arcade.PhysicsEnginePlatformer):
         else:
             return False
 
-    def update(self):
+    def update(self, dt=1 / 60):
         """
         Move everything and resolve collisions.
         """

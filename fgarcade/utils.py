@@ -16,7 +16,7 @@ def create_platformer(title='FGArcade Game', width=800, height=600):
     """
     Crete a new Window class for a platformer game.
     """
-    from .platformer import Platformer
+    from fgarcade.game.platformer import Platformer
 
     def decorator(func):
         game_cls = type('Game', (Platformer,), {'init': func})

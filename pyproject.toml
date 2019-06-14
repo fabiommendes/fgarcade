@@ -9,5 +9,7 @@ author-email = "fabiomacedomendes@gmail.com"
 home-page = "http://github.com/fabiommendes/fgarcade/"
 classifiers = ["License :: OSI Approved :: MIT License"]
 requires = [
-    "arcade~=2.0.4",
+    "arcade~=2.0.9",
+    "toolz",
+    "sidekick",
 ]
