@@ -3,7 +3,7 @@ from functools import partial
 from sidekick import lazy
 
 import arcade
-from fgarcade.assets import get_tile
+from fgarcade.assets import get_tile, get_sprite
 from fgarcade.enums import Role
 from .base import GameWindow
 
@@ -53,7 +53,6 @@ class HasPlatformsMixin(GameWindow):
     def draw_foreground_elements(self):
         super().draw_foreground_elements()
         self.draw_foreground_decorations()
-
 
     #
     # Create elements
@@ -217,10 +216,53 @@ class HasPlatformsMixin(GameWindow):
         kwargs.update(roles=roles, height=height)
         return self.create_ground(width, (x, y + height - 1), **kwargs)
 
+    def create_block(self, name, coords=(0, 0), role=Role.OBJECT):
+        """
+        Create a new block at given coordinates.
+        """
+        sprite = get_sprite(f'other/block/{name}',
+                            scale=self.scaling,
+                            position=self.tile_to_position(*coords),
+                            role=role)
+        self.__append(sprite)
+
+    def create_arrow(self, name, coords=(0, 0), role=Role.BACKGROUND):
+        """
+        Creates a new arrow
+        """
+        x, y = coords
+        x += 0.5
+        y += 0.4
+        sprite = get_sprite(f'other/arrows/{name}',
+                            scale=self.scaling,
+                            position=self.tile_to_position(x, y),
+                            role=role)
+        self.__append(sprite)
+
+    def create_fence(self, name='full', coords=(0, 0), role=Role.FOREGROUND):
+        return self.create_object(f'other/fence/{name}', coords, role)
+
+    def create_foreground(self, name, coords=(0, 0)):
+        return self.create_object(name, coords, Role.FOREGROUND)
+
+    def create_background(self, name, coords=(0, 0)):
+        return self.create_object(name, coords, Role.BACKGROUND)
+
+    def create_object(self, name, coords=(0, 0), role=Role.OBJECT):
+        sprite = get_sprite(name, scale=self.scaling, role=role)
+        x, y = self.tile_to_position(*coords)
+        x = int(x + 32)
+        y = int(y + sprite.height / 2)
+        sprite.position = (x, y)
+        self.__append(sprite)
+        return sprite
 
     #
     # Auxiliary methods
     #
+    def tile_to_position(self, i, j):
+        return 64 * i, 64 * j
+
     def _get_tile(self, kind, color=None, scale=None, **kwargs):
         if color is None:
             color = self.world_theme
@@ -233,6 +275,8 @@ class HasPlatformsMixin(GameWindow):
             which.append(obj)
         elif getattr(obj, 'role', None) == Role.BACKGROUND:
             self.background_decorations.append(obj)
+        elif getattr(obj, 'role', None) == Role.FOREGROUND:
+            self.foreground_decorations.append(obj)
         else:
             self.platforms.append(obj)
 

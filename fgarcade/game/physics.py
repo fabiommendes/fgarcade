@@ -1,6 +1,7 @@
 from sidekick import lazy
 
-from fgarcade import GameWindow, PhysicsEnginePlatformer
+from .base import GameWindow
+from ..physics import PhysicsEnginePlatformer
 
 
 class HasPhysicsMixin(GameWindow):

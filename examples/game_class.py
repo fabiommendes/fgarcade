@@ -21,6 +21,24 @@ class Game(ge.Platformer):
         self.create_ramp('down', 6, coords=(26, 7))
         self.create_tower(10, coords=(34, 1))
 
+        self.create_block('green', (5, 8))
+        self.create_block('red', (6, 8))
+        self.create_block('grey', (7, 8))
+        self.create_block('brown', (8, 8))
+        self.create_block('red-lock', (9, 8))
+
+        self.create_arrow('right', (3, 1))
+
+
+        self.create_fence('left', (10, 1))
+        self.create_fence('middle', (11, 1))
+        self.create_fence('middle', (12, 1))
+        self.create_fence('right', (13, 1))
+
+        self.create_foreground('other/plant/blue-3', (4, 1))
+        self.create_foreground('other/plant/blue-1', (7, 2))
+        self.create_foreground('other/plant/blue-5', (9, 2))
+
     def init_enemies(self):
         pass
 

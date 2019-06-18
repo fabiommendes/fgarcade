@@ -18,6 +18,5 @@ class Platformer(HasPhysicsMixin,
 
     # Sprite lists
     items = None
-    decorations = None
     enemies = None
     animated = None

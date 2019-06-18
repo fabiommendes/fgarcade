@@ -24,8 +24,8 @@ class Command(IntFlag):
 
 class Role(IntEnum):
     BACKGROUND = 0
-    FOREGROUND = 6
-    OBJECT = 1
-    PLATFORM = 2
-    RAMP_UP = 3
-    RAMP_DOWN = 4
+    FOREGROUND = 1
+    OBJECT = 2
+    PLATFORM = 3
+    RAMP_UP = 4
+    RAMP_DOWN = 5

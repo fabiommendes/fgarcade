@@ -80,7 +80,7 @@ class PhysicsEnginePlatformer(arcade.PhysicsEnginePlatformer):
                                      (hit.top + shift_y - player.bottom), 0.5)
                 player.change_y = 0
 
-            # Going up
+            # Going up...
             elif (player.change_y > 0
                   and role == collision_role
                   and player.top > hit.bottom > player.center_y
